@@ -1,20 +1,66 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 🌊 Fluid Portfolio
 
-# Run and deploy your AI Studio app
+A premium, highly interactive portfolio designed to showcase creative development work with a focus on aesthetics, smooth interactions, and a macOS-inspired user experience.
 
-This contains everything you need to run your app locally.
+![Portfolio Preview Showcase](https://res.cloudinary.com/pa1/image/upload/v1771092212/gradii_df4atm.png)
 
-View your app in AI Studio: https://ai.studio/apps/drive/1wQHCFdj98oUwWRbRYZdEx2DglogW6llc
+## Overview
 
-## Run Locally
+Built by **Pawan Kamat**, a Front End Developer with a keen eye for modern design systems. This portfolio isn't just a list of projects; it's a fluid experience featuring:
 
-**Prerequisites:**  Node.js
+- **Interactive macOS Dock**: A custom-built dock with magnification effects and real-time interaction.
+- **Immersive Project Deep-dives**: Detailed views for each project including technical storyboards, tech stacks, and color palettes.
+- **Seamless Theme Switching**: Fully integrated Dark/Light mode support with smooth transitions.
+- **Premium Aesthetics**: Glassmorphism, high-precision typography, and OLED-optimized dark modes.
 
+---
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Tech Stack
+
+- **Framework**: React + Vite
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Animation**: Framer Motion
+- **Icons**: Lucide React
+
+---
+
+## Featured Projects
+
+### 1. Gradii AI
+
+**AI Powered Recruitment Engine**
+
+- Architected a modern front-end system for smart AI voice screening.
+- Optimized performance, slashing page load times from 3s to 0.5s.
+- [Live Demo](https://gradii.ai)
+
+### 2. Gita GPT
+
+**Spiritual AI Companion**
+
+- 1st Place Winner at SIES GST’s Cognition.
+- Fused ancient philosophy with real-time empathetic AI using Hume AI.
+- [Live Demo](https://gita-gpt-gold.vercel.app)
+
+### 3. Made by Nothing Series
+
+**LinkedIn & Instagram Redesigns**
+
+- Redesigning popular platforms through the lens of Nothing’s iconic design language (dot-matrix typography, monochrome base, OLED blacks).
+- [LinkedIn Redesign](https://made-by-nothing-linkedin.vercel.app/) | [Instagram Redesign](https://made-by-nothing-instagram.vercel.app/)
+
+---
+
+## Author
+
+**Pawan Kamat**
+
+- [Resume](https://drive.google.com/file/d/1g3xoGs944mBZ6kO9BpB6Hoe-VTa5iixL/view?usp=sharing)
+- [LinkedIn](https://linkedin.com/in/pawankamat)
+
+---
+
+## License
+
+This project is open source. Feel free to use the concepts for your own inspiration!
