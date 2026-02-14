@@ -1,0 +1,12 @@
+:root {
+  --accent: #004f2d;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::selection {
+  background-color: var(--accent);
+  color: white;
+}

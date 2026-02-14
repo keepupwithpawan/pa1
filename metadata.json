@@ -1,0 +1,5 @@
+{
+  "name": "Fluid Portfolio",
+  "description": "A portfolio featuring a macOS-style dock and fluid shared-element animations using React, Tailwind, and Framer Motion.",
+  "requestFramePermissions": []
+}
