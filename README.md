@@ -2,7 +2,7 @@
 
 A premium, highly interactive portfolio designed to showcase creative development work with a focus on aesthetics, smooth interactions, and a macOS-inspired user experience.
 
-![Portfolio Preview Showcase](https://res.cloudinary.com/pa1/image/upload/v1771092212/gradii_df4atm.png)
+Live Demo: https://kmt-pa1.vercel.app/
 
 ## Overview
 
