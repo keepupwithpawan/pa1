@@ -91,81 +91,96 @@ export const Dock: React.FC<DockProps> = ({
   toggleTheme,
 }) => {
   const mouseX = useMotionValue(Infinity);
+  const [windowWidth, setWindowWidth] = React.useState(
+    typeof window !== "undefined" ? window.innerWidth : 1200,
+  );
+
+  React.useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const isMobile = windowWidth < 768;
 
   return (
-    <div className="fixed bottom-6 left-0 right-0 flex flex-col items-center z-50 pointer-events-none">
+    <div className="fixed bottom-4 md:bottom-6 left-0 right-0 flex flex-col items-center z-50 pointer-events-none">
       <motion.div
-        onMouseMove={(e) => mouseX.set(e.pageX)}
+        onMouseMove={(e) => !isMobile && mouseX.set(e.pageX)}
         onMouseLeave={() => mouseX.set(Infinity)}
-        className={`flex items-end gap-2 px-3 pb-3 h-[68px] backdrop-blur-xl border shadow-2xl rounded-[12px] pointer-events-auto transition-colors duration-500 ${
+        className={`flex items-end gap-1.5 md:gap-2 px-2 md:px-3 pb-2 md:pb-3 h-[56px] md:h-[68px] backdrop-blur-xl border shadow-2xl rounded-[12px] md:rounded-[16px] pointer-events-auto transition-colors duration-500 overflow-x-hidden md:overflow-visible max-w-[95vw] no-scrollbar ${
           isDark ? "bg-black/40 border-white/20" : "bg-white/40 border-black/20"
         }`}
         initial={{ y: 100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 260, damping: 20 }}
       >
-        {projects.map((project) => (
-          <DockItem
-            key={project.id}
-            project={project}
-            mouseX={mouseX}
-            isActive={activeProjectId === project.id}
-            onClick={() => onSelect(project.id)}
-            isDark={isDark}
-          />
-        ))}
+        <div className="flex items-end gap-1.5 md:gap-2 min-w-max">
+          {projects.map((project) => (
+            <DockItem
+              key={project.id}
+              project={project}
+              mouseX={mouseX}
+              isActive={activeProjectId === project.id}
+              onClick={() => onSelect(project.id)}
+              isDark={isDark}
+            />
+          ))}
+        </div>
 
         {/* Separator */}
         <div
-          className={`w-[1px] h-8 mx-1 self-center transition-colors ${
+          className={`w-[1px] h-6 md:h-8 mx-0.5 md:mx-1 self-center transition-colors flex-shrink-0 ${
             isDark ? "bg-white/10" : "bg-black/10"
           }`}
         />
 
-        {/* View Resume */}
-        <a
-          href="https://drive.google.com/file/d/1g3xoGs944mBZ6kO9BpB6Hoe-VTa5iixL/view?usp=sharing"
-          target="_blank"
-          rel="noreferrer"
-          className={`flex items-center justify-center w-12 h-12 cursor-pointer rounded-lg transition-colors group relative ${
-            isDark ? "hover:bg-white/10" : "hover:bg-black/5"
-          }`}
-        >
-          <FileText
-            size={20}
-            className={isDark ? "text-white" : "text-black"}
-          />
-
-          {/* Tooltip */}
-          <div
-            className={`absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 backdrop-blur-md text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap ${
-              isDark ? "bg-white text-black" : "bg-black/80 text-white"
+        <div className="flex items-center gap-1 flex-shrink-0">
+          {/* View Resume */}
+          <a
+            href="https://drive.google.com/file/d/1g3xoGs944mBZ6kO9BpB6Hoe-VTa5iixL/view?usp=sharing"
+            target="_blank"
+            rel="noreferrer"
+            className={`flex items-center justify-center w-10 h-10 md:w-12 md:h-12 cursor-pointer rounded-lg transition-colors group relative ${
+              isDark ? "hover:bg-white/10" : "hover:bg-black/5"
             }`}
           >
-            View Resume
-          </div>
-        </a>
+            <FileText
+              size={18}
+              className={isDark ? "text-white" : "text-black"}
+            />
 
-        {/* Theme Toggle */}
-        <div
-          onClick={toggleTheme}
-          className={`flex items-center justify-center w-12 h-12 cursor-pointer rounded-lg transition-colors group relative ${
-            isDark ? "hover:bg-white/10" : "hover:bg-black/5"
-          }`}
-        >
-          {isDark ? (
-            <Sun size={20} className="text-white" />
-          ) : (
-            <Moon size={20} className="text-black" />
-          )}
+            {/* Tooltip */}
+            <div
+              className={`absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 backdrop-blur-md text-[10px] md:text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap ${
+                isDark ? "bg-white text-black" : "bg-black/80 text-white"
+              }`}
+            >
+              View Resume
+            </div>
+          </a>
 
-          {/* Tooltip */}
+          {/* Theme Toggle */}
           <div
-            className={`absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 backdrop-blur-md text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap ${
-              isDark ? "bg-white text-black" : "bg-black/80 text-white"
+            onClick={toggleTheme}
+            className={`flex items-center justify-center w-10 h-10 md:w-12 md:h-12 cursor-pointer rounded-lg transition-colors group relative ${
+              isDark ? "hover:bg-white/10" : "hover:bg-black/5"
             }`}
           >
-            {isDark ? "Light Mode" : "Dark Mode"}
+            {isDark ? (
+              <Sun size={18} className="text-white" />
+            ) : (
+              <Moon size={18} className="text-black" />
+            )}
+
+            {/* Tooltip */}
+            <div
+              className={`absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 backdrop-blur-md text-[10px] md:text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap ${
+                isDark ? "bg-white text-black" : "bg-black/80 text-white"
+              }`}
+            >
+              {isDark ? "Light Mode" : "Dark Mode"}
+            </div>
           </div>
         </div>
       </motion.div>

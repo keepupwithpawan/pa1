@@ -23,7 +23,7 @@ function App() {
       }`}
     >
       {/* Main Content Area */}
-      <main className="relative z-10 w-full h-screen flex flex-col items-center justify-center p-12">
+      <main className="relative z-10 w-full h-screen flex flex-col items-center justify-center p-6 md:p-12">
         {/* Intro Text - Only visible when no project is active */}
         <AnimatePresence>
           {!activeProjectId && (
@@ -50,15 +50,15 @@ function App() {
                 exit={{ opacity: 0, y: -30, transition: { duration: 0.4 } }}
                 className="text-center max-w-3xl flex flex-col gap-4 my-8"
               >
-                <h1 className="font-serif italic text-6xl md:text-8xl tracking-wide">
+                <h1 className="font-serif italic text-4xl md:text-5xl xl:text-6xl 2xl:text-7xl tracking-wide">
                   Pawan Kamat
                 </h1>
                 <p
-                  className={`text-lg md:text-xl leading-relaxed max-w-xl mx-auto font-light ${
+                  className={`text-md md:text-lg xl:text-xl font-light leading-relaxed max-w-xl xl:max-w-2xl mx-auto ${
                     isDark ? "text-gray-400" : "text-gray-500"
                   }`}
                 >
-                  Front End Developer with an eye for aesthetics
+                  Front End Developer based in Mumbai
                 </p>
               </motion.div>
             </>
