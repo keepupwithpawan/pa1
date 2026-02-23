@@ -24,6 +24,8 @@ interface DockItemProps {
   isActive: boolean;
   onClick: () => void;
   isDark: boolean;
+  isMobile: boolean;
+  isXS: boolean;
 }
 
 const DockItem: React.FC<DockItemProps> = ({
@@ -32,6 +34,8 @@ const DockItem: React.FC<DockItemProps> = ({
   isActive,
   onClick,
   isDark,
+  isMobile,
+  isXS,
 }) => {
   const ref = React.useRef<HTMLDivElement>(null);
 
@@ -42,7 +46,13 @@ const DockItem: React.FC<DockItemProps> = ({
   });
 
   // Maginfication logic
-  const widthSync = useTransform(distance, [-150, 0, 150], [48, 80, 48]);
+  const baseWidth = isXS ? 32 : isMobile ? 40 : 48;
+  const targetWidth = isXS ? 60 : 80;
+  const widthSync = useTransform(
+    distance,
+    [-150, 0, 150],
+    [baseWidth, targetWidth, baseWidth],
+  );
   const width = useSpring(widthSync, {
     mass: 0.1,
     stiffness: 150,
@@ -102,20 +112,23 @@ export const Dock: React.FC<DockProps> = ({
   }, []);
 
   const isMobile = windowWidth < 768;
+  const isXS = windowWidth < 360;
 
   return (
     <div className="fixed bottom-4 md:bottom-6 left-0 right-0 flex flex-col items-center z-50 pointer-events-none">
       <motion.div
         onMouseMove={(e) => !isMobile && mouseX.set(e.pageX)}
         onMouseLeave={() => mouseX.set(Infinity)}
-        className={`flex items-end gap-1.5 md:gap-2 px-2 md:px-3 pb-2 md:pb-3 h-[56px] md:h-[68px] backdrop-blur-xl border shadow-2xl rounded-[12px] md:rounded-[16px] pointer-events-auto transition-colors duration-500 overflow-x-hidden md:overflow-visible max-w-[95vw] no-scrollbar ${
+        className={`flex items-end ${isXS ? "gap-1 px-1.5 pb-1.5 h-[44px]" : "gap-1.5 md:gap-2 px-2 md:px-3 pb-2 md:pb-3 h-[52px] md:h-[68px]"} backdrop-blur-xl border shadow-2xl rounded-[12px] md:rounded-[16px] pointer-events-auto transition-all duration-500 overflow-x-auto md:overflow-visible max-w-[98vw] no-scrollbar ${
           isDark ? "bg-black/40 border-white/20" : "bg-white/40 border-black/20"
         }`}
         initial={{ y: 100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 260, damping: 20 }}
       >
-        <div className="flex items-end gap-1.5 md:gap-2 min-w-max">
+        <div
+          className={`flex items-end ${isXS ? "gap-1" : "gap-1.5 md:gap-2"} min-w-max`}
+        >
           {projects.map((project) => (
             <DockItem
               key={project.id}
@@ -124,13 +137,15 @@ export const Dock: React.FC<DockProps> = ({
               isActive={activeProjectId === project.id}
               onClick={() => onSelect(project.id)}
               isDark={isDark}
+              isMobile={isMobile}
+              isXS={isXS}
             />
           ))}
         </div>
 
         {/* Separator */}
         <div
-          className={`w-[1px] h-6 md:h-8 mx-0.5 md:mx-1 self-center transition-colors flex-shrink-0 ${
+          className={`w-[1px] ${isXS ? "h-4 mx-0" : "h-6 md:h-8 mx-0.5 md:mx-1"} self-center transition-colors flex-shrink-0 ${
             isDark ? "bg-white/10" : "bg-black/10"
           }`}
         />
@@ -141,12 +156,12 @@ export const Dock: React.FC<DockProps> = ({
             href="https://drive.google.com/file/d/1g3xoGs944mBZ6kO9BpB6Hoe-VTa5iixL/view?usp=sharing"
             target="_blank"
             rel="noreferrer"
-            className={`flex items-center justify-center w-10 h-10 md:w-12 md:h-12 cursor-pointer rounded-lg transition-colors group relative ${
+            className={`flex items-center justify-center ${isXS ? "w-8 h-8" : "w-9 h-9 md:w-12 md:h-12"} cursor-pointer rounded-lg transition-colors group relative ${
               isDark ? "hover:bg-white/10" : "hover:bg-black/5"
             }`}
           >
             <FileText
-              size={18}
+              size={isXS ? 14 : 16}
               className={isDark ? "text-white" : "text-black"}
             />
 
@@ -163,14 +178,14 @@ export const Dock: React.FC<DockProps> = ({
           {/* Theme Toggle */}
           <div
             onClick={toggleTheme}
-            className={`flex items-center justify-center w-10 h-10 md:w-12 md:h-12 cursor-pointer rounded-lg transition-colors group relative ${
+            className={`flex items-center justify-center ${isXS ? "w-8 h-8" : "w-9 h-9 md:w-12 md:h-12"} cursor-pointer rounded-lg transition-colors group relative ${
               isDark ? "hover:bg-white/10" : "hover:bg-black/5"
             }`}
           >
             {isDark ? (
-              <Sun size={18} className="text-white" />
+              <Sun size={isXS ? 14 : 16} className="text-white" />
             ) : (
-              <Moon size={18} className="text-black" />
+              <Moon size={isXS ? 14 : 16} className="text-black" />
             )}
 
             {/* Tooltip */}
