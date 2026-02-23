@@ -244,11 +244,11 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({
       />
 
       <div
-        className={`relative w-full h-full flex flex-col items-center justify-center pointer-events-auto ${isMobile ? "overflow-y-auto no-scrollbar py-20 px-4" : "md:overflow-visible md:py-0 custom-scrollbar"}`}
+        className={`relative w-full h-full flex flex-col items-center pointer-events-auto ${isMobile ? "justify-start overflow-y-auto no-scrollbar py-12 px-4" : "justify-center md:overflow-visible md:py-0 custom-scrollbar"}`}
       >
         {/* Main Center Image Container */}
         <motion.div
-          className="relative z-20 transition-all duration-300 2xl:w-[720px] 2xl:h-[405px] xl:w-[600px] xl:h-[338px] lg:w-[460px] lg:h-[259px] md:w-[340px] md:h-[191px] w-[90%] aspect-video flex-shrink-0"
+          className="relative z-20 transition-all duration-300 2xl:w-[720px] 2xl:h-[405px] xl:w-[600px] xl:h-[338px] lg:w-[460px] lg:h-[259px] md:w-[340px] md:h-[191px] w-full h-[40vh] flex-shrink-0"
           exit={{
             scale: 0.05,
             scaleX: 0.01,
@@ -332,7 +332,7 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({
                         else nextImage();
                       }
                     }}
-                    className={`absolute inset-0 w-full h-full object-fit ${
+                    className={`absolute inset-0 w-full h-full object-fit object-top ${
                       hasTouch ? "cursor-grab active:cursor-grabbing" : ""
                     } ${isDark ? "bg-[#0a0a0a]" : "bg-gray-50"}`}
                   />
@@ -390,9 +390,8 @@ export const ProjectDetail: React.FC<ProjectDetailProps> = ({
           </motion.a>
         </motion.div>
 
-        {/* Scattered Cards Container */}
         <div
-          className={`${isMobile ? "flex flex-col items-center w-full gap-6 mt-12 mb-32" : "md:absolute md:inset-0 pointer-events-none flex flex-row items-center justify-center md:mt-0 md:px-0 md:mb-0"}`}
+          className={`${isMobile ? "flex flex-col items-center w-full gap-6 mt-8 mb-20" : "md:absolute md:inset-0 pointer-events-none flex flex-row items-center justify-center md:mt-0 md:px-0 md:mb-0"}`}
         >
           {/* 1. Title & Category (Top Left) */}
           <motion.div
