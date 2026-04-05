@@ -46,8 +46,8 @@ const DockItem: React.FC<DockItemProps> = ({
   });
 
   // Maginfication logic
-  const baseWidth = isXS ? 32 : isMobile ? 40 : 48;
-  const targetWidth = isXS ? 60 : 80;
+  const baseWidth = isXS ? 28 : isMobile ? 40 : 48;
+  const targetWidth = isXS ? 50 : 80;
   const widthSync = useTransform(
     distance,
     [-150, 0, 150],
@@ -119,7 +119,7 @@ export const Dock: React.FC<DockProps> = ({
       <motion.div
         onMouseMove={(e) => !isMobile && mouseX.set(e.pageX)}
         onMouseLeave={() => mouseX.set(Infinity)}
-        className={`flex items-end ${isXS ? "gap-1 px-1.5 pb-1.5 h-[44px]" : "gap-1.5 md:gap-2 px-2 md:px-3 pb-2 md:pb-3 h-[52px] md:h-[68px]"} backdrop-blur-xl border shadow-2xl rounded-[12px] md:rounded-[16px] pointer-events-auto transition-all duration-500 overflow-x-auto md:overflow-visible max-w-[98vw] no-scrollbar ${
+        className={`flex items-end ${isXS ? "gap-0.5 px-1 pb-1 h-[40px]" : "gap-1.5 md:gap-2 px-2 md:px-3 pb-2 md:pb-3 h-[52px] md:h-[68px]"} backdrop-blur-xl border shadow-2xl rounded-[12px] md:rounded-[16px] pointer-events-auto transition-all duration-500 overflow-x-auto md:overflow-visible max-w-[98vw] no-scrollbar ${
           isDark ? "bg-black/40 border-white/20" : "bg-white/40 border-black/20"
         }`}
         initial={{ y: 100 }}
@@ -127,7 +127,7 @@ export const Dock: React.FC<DockProps> = ({
         transition={{ type: "spring", stiffness: 260, damping: 20 }}
       >
         <div
-          className={`flex items-end ${isXS ? "gap-1" : "gap-1.5 md:gap-2"} min-w-max`}
+          className={`flex items-end ${isXS ? "gap-0.5" : "gap-1.5 md:gap-2"} min-w-max`}
         >
           {projects.map((project) => (
             <DockItem
@@ -150,18 +150,20 @@ export const Dock: React.FC<DockProps> = ({
           }`}
         />
 
-        <div className="flex items-center gap-1 flex-shrink-0">
+        <div
+          className={`flex items-center ${isXS ? "gap-0.5" : "gap-1"} flex-shrink-0`}
+        >
           {/* View Resume */}
           <a
             href="https://drive.google.com/file/d/1g3xoGs944mBZ6kO9BpB6Hoe-VTa5iixL/view?usp=sharing"
             target="_blank"
             rel="noreferrer"
-            className={`flex items-center justify-center ${isXS ? "w-8 h-8" : "w-9 h-9 md:w-12 md:h-12"} cursor-pointer rounded-lg transition-colors group relative ${
+            className={`flex items-center justify-center ${isXS ? "w-7 h-7" : "w-9 h-9 md:w-12 md:h-12"} cursor-pointer rounded-lg transition-colors group relative ${
               isDark ? "hover:bg-white/10" : "hover:bg-black/5"
             }`}
           >
             <FileText
-              size={isXS ? 14 : 16}
+              size={isXS ? 12 : 16}
               className={isDark ? "text-white" : "text-black"}
             />
 
@@ -178,14 +180,14 @@ export const Dock: React.FC<DockProps> = ({
           {/* Theme Toggle */}
           <div
             onClick={toggleTheme}
-            className={`flex items-center justify-center ${isXS ? "w-8 h-8" : "w-9 h-9 md:w-12 md:h-12"} cursor-pointer rounded-lg transition-colors group relative ${
+            className={`flex items-center justify-center ${isXS ? "w-7 h-7" : "w-9 h-9 md:w-12 md:h-12"} cursor-pointer rounded-lg transition-colors group relative ${
               isDark ? "hover:bg-white/10" : "hover:bg-black/5"
             }`}
           >
             {isDark ? (
-              <Sun size={isXS ? 14 : 16} className="text-white" />
+              <Sun size={isXS ? 12 : 16} className="text-white" />
             ) : (
-              <Moon size={isXS ? 14 : 16} className="text-black" />
+              <Moon size={isXS ? 12 : 16} className="text-black" />
             )}
 
             {/* Tooltip */}
