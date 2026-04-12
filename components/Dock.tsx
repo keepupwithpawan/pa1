@@ -8,7 +8,7 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { Project } from "../types";
-import { Moon, Sun, FileText } from "lucide-react";
+import { Moon, Sun, FileText, BookOpen } from "lucide-react";
 
 interface DockProps {
   projects: Project[];
@@ -153,6 +153,28 @@ export const Dock: React.FC<DockProps> = ({
         <div
           className={`flex items-center ${isXS ? "gap-0.5" : "gap-1"} flex-shrink-0`}
         >
+          {/* My Magazine */}
+          <a
+            href="/magazine"
+            className={`flex items-center justify-center ${isXS ? "w-7 h-7" : "w-9 h-9 md:w-12 md:h-12"} cursor-pointer rounded-lg transition-colors group relative ${
+              isDark ? "hover:bg-white/10" : "hover:bg-black/5"
+            }`}
+          >
+            <BookOpen
+              size={isXS ? 12 : 16}
+              className={isDark ? "text-white" : "text-black"}
+            />
+
+            {/* Tooltip */}
+            <div
+              className={`absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 backdrop-blur-md text-[10px] md:text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap ${
+                isDark ? "bg-white text-black" : "bg-black/80 text-white"
+              }`}
+            >
+              My Magazine
+            </div>
+          </a>
+
           {/* View Resume */}
           <a
             href="https://drive.google.com/file/d/1g3xoGs944mBZ6kO9BpB6Hoe-VTa5iixL/view?usp=sharing"
