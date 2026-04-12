@@ -17,7 +17,7 @@ Built by **Pawan Kamat**, a Front End Developer with a keen eye for modern desig
 
 ## Tech Stack
 
-- **Framework**: React + Vite
+- **Framework**: Next.js App Router
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **Animation**: Framer Motion
@@ -60,6 +60,22 @@ Built by **Pawan Kamat**, a Front End Developer with a keen eye for modern desig
 - [LinkedIn](https://linkedin.com/in/pawankamat)
 
 ---
+
+## App Router Routes
+
+This project now uses folder-based routing with the Next.js App Router.
+
+- `app/page.tsx` -> `/`
+- Add a new route by creating a folder under `app` and adding `page.tsx`.
+  - Example: `app/about/page.tsx` -> `/about`
+  - Example: `app/projects/page.tsx` -> `/projects`
+
+## Local Development
+
+- Install dependencies: `npm install`
+- Start dev server: `npm run dev`
+- Production build: `npm run build`
+- Start production server: `npm run start`
 
 ## License
 
