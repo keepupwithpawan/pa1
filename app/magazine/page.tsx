@@ -114,7 +114,7 @@ const PAGE_CONTENTS: React.FC<PageProps>[] = [
           </a>
           .
         </p>
-        <h2 className="font-serif text-4xl md:text-6xl text-black my-4 md:my-8">
+        <h2 className="font-serif text-6xl text-black my-8">
           FUN FACT: I HAD A STARTUP!
         </h2>
         <div className="mb-8">
