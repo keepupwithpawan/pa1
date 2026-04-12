@@ -117,35 +117,56 @@ const PAGE_CONTENTS: React.FC<PageProps>[] = [
         <h2 className="font-serif text-4xl md:text-6xl text-black my-4 md:my-8">
           FUN FACT: I HAD A STARTUP!
         </h2>
-        <p className="text-justify mb-8">
-          Before graduating me and 3 of my friends started Vetra, it was a
-          pinterest alternative but for developers. It had a curated collection
-          of projects, portfolios, landing pages and more with their live site,
-          the Github Repo, the dev details and more. But since 2 of my friends
-          moved to US to pursue their master&apos;s, we decided to give it a
-          rest.
-          <br />
-          <br />
-          Here are few of the important links:
-          <div className="my-4 w-full flex flex-wrap items-center gap-4">
+        <div className="mb-8">
+          <p className="text-justify">
+            Before graduating me and 3 of my friends started Vetra, it was a
+            pinterest alternative but for developers. It had a curated
+            collection of projects, portfolios, landing pages and more with
+            their live site, the Github Repo, the dev details and more. But
+            since 2 of my friends moved to US to pursue their master&apos;s, we
+            decided to give it a rest.
+            <br />
+            <br />
+            Here are few of the important links:
+          </p>
+          <div className="my-4 w-full grid grid-cols-2 lg:flex lg:flex-wrap items-center gap-3 md:gap-4">
             {[
-              { label: "LinkedIn", color: "bg-[#0077b5]" },
-              { label: "GitHub", color: "bg-[#24292e]" },
-              { label: "Pinterest", color: "bg-[#e60023]" },
-              { label: "Instagram", color: "bg-[#c13584]" },
-            ].map(({ label, color }) => (
-              <button
+              {
+                label: "LinkedIn",
+                color: "bg-[#0077b5]",
+                href: "https://www.linkedin.com/in/pawankamat",
+              },
+              {
+                label: "GitHub",
+                color: "bg-[#24292e]",
+                href: "https://github.com/keepupwithpawan",
+              },
+              {
+                label: "Pinterest",
+                color: "bg-[#e60023]",
+                href: "https://in.pinterest.com/keepupwithpawan",
+              },
+              {
+                label: "Instagram",
+                color: "bg-[#c13584]",
+                href: "https://www.instagram.com/keepupwithpawan",
+              },
+            ].map(({ label, color, href }) => (
+              <a
                 key={label}
-                className="relative overflow-hidden flex-1 px-4 py-10 border border-black/10 cursor-pointer group text-white md:text-black md:hover:text-white transition-colors duration-500"
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative overflow-hidden flex-1 px-4 py-10 border border-black/10 cursor-pointer group text-white md:text-black md:hover:text-white transition-colors duration-500 flex justify-center items-center"
               >
                 <div
                   className={`absolute inset-0 w-full h-full ${color} translate-x-0 md:-translate-x-[105%] md:group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.7,0,0.3,1)] z-0`}
                 />
                 <span className="relative z-10">{label}</span>
-              </button>
+              </a>
             ))}
           </div>
-        </p>
+        </div>
       </div>
 
       <button
