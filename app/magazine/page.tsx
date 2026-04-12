@@ -24,7 +24,10 @@ const PAGE_CONTENTS: React.FC<PageProps>[] = [
           A little bit <br />
           of everything.
         </h1>{" "}
-        <a href="/" className="absolute bottom-0 left-0 hover:opacity-80 transition-opacity z-20 cursor-pointer">
+        <a
+          href="/"
+          className="absolute bottom-0 left-0 hover:opacity-80 transition-opacity z-20 cursor-pointer"
+        >
           <h1 className="mgz-serif text-xl md:text-3xl font-bold px-8 py-6 bg-white text-[#472f7a]">
             pa1.
           </h1>
