@@ -229,6 +229,149 @@ const PAGE_CONTENTS: React.FC<PageProps>[] = [
           ))}
         </div>
       </div>
+
+      <button
+        onClick={next}
+        className="hidden md:block absolute bottom-8 right-8 z-10 px-6 py-2 bg-accent text-white hover:opacity-80 transition-all duration-300 cursor-pointer"
+      >
+        Next Page
+      </button>
+    </div>
+  ),
+
+  //Page 5 (Left side after 2 flips - Back of Sheet 1)
+  ({ next, prev }) => (
+    <div className="w-full h-full relative bg-[#fcfbf9] text-black">
+      <div className="w-full h-full overflow-y-auto p-8 pb-24 flex flex-col [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <h2 className="font-serif text-6xl text-black my-8">
+          THE TIME I DIRECTED A BRAND CAMPAIGN!
+        </h2>
+        <div className="mb-8">
+          <p className="text-justify">
+            So back in January of 2021 I was approached by my dear friend Arya
+            Sawant (Co-Founder of{" "}
+            <a
+              href="https://onepx.in/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-1 text-[#472f7a] hover:opacity-70 transition-all duration-200"
+            >
+              1PX
+            </a>{" "}
+            and Founder of{" "}
+            <a
+              href="https://www.instagram.com/bayrack.in/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-1 text-[#472f7a] hover:opacity-70 transition-all duration-200"
+            >
+              BayRack Clothing
+            </a>
+            ) to shoot a brand campaign for his latest drop. I was working with
+            my friend{" "}
+            <a
+              href="https://www.instagram.com/aahanabobade1/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-1 text-[#472f7a] hover:opacity-70 transition-all duration-200"
+            >
+              Aahana Bobade
+            </a>{" "}
+            on DirectedByThem and we decided to do this shoot under our brand.
+            <br />
+            <br />
+            Here are few of the important links:
+          </p>
+          <div className="my-4 w-full grid grid-cols-2 lg:flex lg:flex-wrap items-center gap-3 md:gap-4">
+            {[
+              {
+                label: "my fav reel",
+                color: "bg-[#c13584]",
+                href: "https://www.instagram.com/reel/DFYAJWNyJ-R/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+              },
+              {
+                label: "bayrack insta",
+                color: "bg-[#c13584]",
+                href: "https://www.instagram.com/bayrack.in",
+              },
+              {
+                label: "directedbythem insta",
+                color: "bg-[#c13584]",
+                href: "https://www.instagram.com/directedbythem/",
+              },
+            ].map(({ label, color, href }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative overflow-hidden flex-1 px-4 py-10 border border-black/10 cursor-pointer group text-white md:text-black md:hover:text-white transition-colors duration-500 flex justify-center items-center"
+              >
+                <div
+                  className={`absolute inset-0 w-full h-full ${color} translate-x-0 md:-translate-x-[105%] md:group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.7,0,0.3,1)] z-0`}
+                />
+                <span className="relative z-10">{label}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={prev}
+        className="hidden md:block absolute bottom-8 left-8 z-10 px-6 py-2 bg-accent text-white hover:opacity-80 transition-all duration-300 cursor-pointer"
+      >
+        Previous Page
+      </button>
+    </div>
+  ),
+
+  // Page 6 (Right side after 1 flip - Front of Sheet 1)
+  ({ next, prev }) => (
+    <div className="w-full h-full relative bg-[#fcfbf9] text-black">
+      <div className="w-full h-full overflow-y-auto p-8 pb-24 flex flex-col [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <h1 className="mgz-serif text-4xl md:text-6xl text-center my-2 md:my-4 font-bold text-accent">
+          Gallery
+        </h1>
+
+        {/* Abstract Magazine Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 w-full mt-6 auto-rows-[160px] pb-8 grid-flow-dense">
+          {[
+            {
+              src: "https://res.cloudinary.com/pa1/image/upload/v1777473765/Shot_14_rtlwqt.jpg",
+              span: "col-span-2 row-span-2",
+            },
+            {
+              src: "https://res.cloudinary.com/pa1/image/upload/v1777473765/Shot_2_tb2poj.jpg",
+              span: "col-span-1 row-span-1",
+            },
+            {
+              src: "https://res.cloudinary.com/pa1/image/upload/v1777473765/Shot_3_yboo7u.jpg",
+              span: "md:col-span-2 col-span-1 row-span-2",
+            },
+            {
+              src: "https://res.cloudinary.com/pa1/image/upload/v1777473766/Shot_12_fvrzx7.jpg",
+              span: "col-span-1 row-span-2",
+            },
+            {
+              src: "https://res.cloudinary.com/pa1/image/upload/v1777473766/Shot_6_ocmlzf.jpg",
+              span: "col-span-1 row-span-1",
+            },
+            {
+              src: "https://res.cloudinary.com/pa1/image/upload/v1777473771/Shot_10_vhopu2.jpg",
+              span: "md:col-span-3 col-span-2 row-span-2",
+            },
+          ].map((item, i) => (
+            <div key={i} className={`relative overflow-hidden ${item.span}`}>
+              <img
+                src={item.src}
+                alt="Artistic gallery item"
+                className="w-full h-full object-cover transition-all duration-200"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   ),
 ];
