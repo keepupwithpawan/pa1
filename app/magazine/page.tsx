@@ -45,7 +45,7 @@ function NoteContent({ className = "" }: { className?: string }) {
         className="w-16 h-16 md:w-24 md:h-24 object-contain pointer-events-none"
       />
       <p
-        className="text-base text-[#1f2d24]/60 text-center"
+        className="text-2xl text-[#1f2d24] text-center"
         style={{ fontFamily: '"Shadows Into Light", cursive' }}
       >
         with love pa1.

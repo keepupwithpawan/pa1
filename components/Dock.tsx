@@ -101,11 +101,10 @@ export const Dock: React.FC<DockProps> = ({
   toggleTheme,
 }) => {
   const mouseX = useMotionValue(Infinity);
-  const [windowWidth, setWindowWidth] = React.useState(
-    typeof window !== "undefined" ? window.innerWidth : 1200,
-  );
+  const [windowWidth, setWindowWidth] = React.useState(1200);
 
   React.useEffect(() => {
+    setWindowWidth(window.innerWidth);
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
