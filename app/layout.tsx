@@ -23,6 +23,10 @@ export default function RootLayout({
           rel="stylesheet"
         />
         <link
+          href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap"
+          rel="stylesheet"
+        ></link>
+        <link
           href="https://api.fontshare.com/v2/css?f[]=gambetta@400&display=swap"
           rel="stylesheet"
         ></link>

@@ -1,17 +1,240 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   motion,
   useSpring,
   useTransform,
   useMotionValue,
   AnimatePresence,
+  animate,
 } from "framer-motion";
 
 interface PageProps {
   next: () => void;
   prev: () => void;
+}
+
+const imageCache = new Set<string>();
+
+// The handwritten note's content lives in one place so the tucked-in copy and
+// the focused, centered copy stay identical.
+function NoteContent({ className = "" }: { className?: string }) {
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <p
+        className={`leading-relaxed text-[#1f2d24] text-center ${className}`}
+        style={{ fontFamily: '"Shadows Into Light", cursive' }}
+      >
+        Thank you for reading!
+      </p>
+      <img
+        src="/assets/doggie.png"
+        alt=""
+        draggable={false}
+        className="w-28 h-28 object-contain pointer-events-none"
+      />
+      <p
+        className="text-4xl text-[#1f2d24] text-center"
+        style={{ fontFamily: '"Shadows Into Light", cursive' }}
+      >
+        with love pa1.
+      </p>
+    </div>
+  );
+}
+
+// One spring drives the note's shared-layout morph in BOTH directions, so
+// tucking it back is the exact reverse of pulling it out.
+const NOTE_MORPH = { type: "spring" as const, stiffness: 200, damping: 26 };
+
+function EnvelopeCard() {
+  // All three envelope images share one 1844x2304 canvas, so stacking them
+  // full-size lines the flap, note opening and pocket up perfectly.
+  const ENV_W = 1844;
+  const ENV_H = 2304;
+  // The note slides vertically between two states:
+  //   y = REST_HIDDEN (0)  → tucked inside, only a lip showing above the opening
+  //   y = PULLED_OUT       → dragged fully up and out of the envelope
+  const REST_HIDDEN = 0;
+  const PULLED_OUT = -300;
+
+  const y = useMotionValue(REST_HIDDEN);
+  // `focused` drives the centered, blurred-background reveal. While focused the
+  // tucked-in note is hidden so it doesn't double up with the centered copy.
+  const [focused, setFocused] = useState(false);
+
+  // The note's shadow deepens as it's dragged out for a lift-off feel.
+  const noteShadow = useTransform(
+    y,
+    [REST_HIDDEN, PULLED_OUT],
+    ["0 4px 10px rgba(0,0,0,0.12)", "0 28px 50px rgba(0,0,0,0.28)"],
+  );
+
+  // Tuck the note back in — the exact reverse of pulling it out. First unfocus
+  // so the in-envelope note (which sits BEHIND the front pocket) reappears at the
+  // pulled-out position, then slide it DOWN through the opening into rest, so it
+  // visibly disappears into the slot from the top rather than just shrinking.
+  // `returning` is true while the note is morphing center→opening on its way
+  // back in. Once that morph completes we slide it DOWN into the slot.
+  const [returning, setReturning] = useState(false);
+
+  const tuckBack = () => {
+    y.set(PULLED_OUT);
+    setReturning(true);
+    setFocused(false);
+  };
+
+  return (
+    <div className="w-full h-full flex flex-col justify-center items-center bg-[#fcfbf9] text-black px-6 select-none overflow-hidden">
+      {/* Envelope assembly — three stacked layers sharing one canvas:
+          1. envelope-top.png   (open flap)   → BEHIND the note   (z-0)
+          2. the note                          → MIDDLE            (z-10)
+          3. envelope-bottom.png (front pocket) → IN FRONT of note (z-20)
+          so the note is genuinely tucked inside and emerges from the opening. */}
+      <div
+        className="relative"
+        style={{
+          width: `min(${ENV_W / 4.2}px, 62vw)`,
+          aspectRatio: `${ENV_W} / ${ENV_H}`,
+        }}
+      >
+        {/* 1. Open flap (behind everything) */}
+        <img
+          src="/assets/envelope-top.png"
+          alt=""
+          draggable={false}
+          className="absolute inset-0 w-full h-full object-contain z-0 pointer-events-none"
+        />
+
+        {/* 2. Note — tucked between the flap and the pocket. Anchored from its
+            BOTTOM so the body grows UPWARD and stays contained; at rest only a
+            small lip peeks above the pocket opening. Dragging UP past halfway
+            hands off to the focused, centered reveal below. */}
+        {!focused && (
+          <motion.div
+            className="absolute left-1/2 -translate-x-1/2 z-10 cursor-grab active:cursor-grabbing"
+            style={{
+              y,
+              bottom: "30%",
+              width: "60%",
+            }}
+            drag="y"
+            dragConstraints={{ top: PULLED_OUT, bottom: REST_HIDDEN }}
+            dragElastic={0.05}
+            onDragEnd={() => {
+              // Pulled past halfway → lift it out into the centered focus view.
+              if (y.get() < PULLED_OUT / 2) {
+                setFocused(true);
+              } else {
+                animateNote(y, REST_HIDDEN);
+              }
+            }}
+            whileTap={{ cursor: "grabbing" }}
+          >
+            {/* Shared element: this SAME yellow card flies to the screen centre
+                via layoutId when focused, so the motion is one continuous note
+                rather than a swap between two elements. */}
+            <motion.div
+              layoutId="envelope-note"
+              className="bg-[#fdf6b2] px-8 pt-4 pb-7"
+              style={{ rotate: -1.4, boxShadow: noteShadow }}
+              transition={NOTE_MORPH}
+              onLayoutAnimationComplete={() => {
+                // The center→opening morph just finished; now slide the note
+                // DOWN into the slot, completing the reverse of the pull-out.
+                if (returning) {
+                  setReturning(false);
+                  animateNote(y, REST_HIDDEN);
+                }
+              }}
+            >
+              <NoteContent className="text-2xl md:text-3xl" />
+            </motion.div>
+          </motion.div>
+        )}
+
+        {/* 3. Front pocket (in front of the note's lower half). Drags pass
+            through to the note above via pointer-events-none. */}
+        <img
+          src="/assets/envelope-bottom.png"
+          alt="Envelope"
+          draggable={false}
+          className="absolute inset-0 w-full h-full object-contain z-20 pointer-events-none"
+        />
+      </div>
+
+      {/* Backdrop blur — only the blur lives in AnimatePresence so it can fade.
+          Clicking it tucks the note back. */}
+      <AnimatePresence>
+        {focused && (
+          <motion.div
+            className="fixed inset-0 z-[100] bg-black/30 backdrop-blur-md pointer-events-auto cursor-pointer"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            onClick={tuckBack}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Focused note — kept OUTSIDE AnimatePresence and gated only by `focused`
+          so it mounts/unmounts in the SAME render as the tucked-in card. That
+          lets the shared layoutId morph the note both ways with one spring, so
+          tucking back is the exact reverse of the pull-out. */}
+      {focused && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 pointer-events-none">
+          <motion.div
+            layoutId="envelope-note"
+            className="bg-[#fdf6b2] px-10 py-12 md:px-14 md:py-16 cursor-default pointer-events-auto"
+            style={{ boxShadow: "0 30px 70px rgba(0,0,0,0.35)" }}
+            initial={{ rotate: -1.4 }}
+            animate={{ rotate: 0 }}
+            transition={NOTE_MORPH}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <NoteContent className="text-3xl md:text-5xl" />
+          </motion.div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Eased spring-snap for the note using framer-motion's imperative animate.
+function animateNote(y: ReturnType<typeof useMotionValue<number>>, to: number) {
+  animate(y, to, { type: "spring", stiffness: 260, damping: 30 });
+}
+
+function GhostImage({ src, alt }: { src: string; alt: string }) {
+  const [loaded, setLoaded] = useState(() => imageCache.has(src));
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    if (imgRef.current?.complete) {
+      setLoaded(true);
+      imageCache.add(src);
+    }
+  }, [src]);
+
+  const handleLoad = () => {
+    setLoaded(true);
+    imageCache.add(src);
+  };
+
+  return (
+    <div className="relative w-full h-full">
+      {!loaded && <div className="skeleton-shimmer absolute inset-0" />}
+      <img
+        ref={imgRef}
+        src={src}
+        alt={alt}
+        onLoad={handleLoad}
+        className={`w-full h-full object-cover transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}
+      />
+    </div>
+  );
 }
 
 /* ─── ADD NEW PAGES HERE ─── */
@@ -220,11 +443,7 @@ const PAGE_CONTENTS: React.FC<PageProps>[] = [
             },
           ].map((item, i) => (
             <div key={i} className={`relative overflow-hidden ${item.span}`}>
-              <img
-                src={item.src}
-                alt="Artistic gallery item"
-                className="w-full h-full object-cover transition-all duration-200"
-              />
+              <GhostImage src={item.src} alt="Artistic gallery item" />
             </div>
           ))}
         </div>
@@ -363,18 +582,25 @@ const PAGE_CONTENTS: React.FC<PageProps>[] = [
             },
           ].map((item, i) => (
             <div key={i} className={`relative overflow-hidden ${item.span}`}>
-              <img
-                src={item.src}
-                alt="Artistic gallery item"
-                className="w-full h-full object-cover transition-all duration-200"
-              />
+              <GhostImage src={item.src} alt="Artistic gallery item" />
             </div>
           ))}
         </div>
       </div>
+
+      <button
+        onClick={next}
+        className="hidden md:block absolute bottom-8 right-8 z-10 px-6 py-2 bg-accent text-white hover:opacity-80 transition-all duration-300 cursor-pointer"
+      >
+        Next Page
+      </button>
     </div>
   ),
 ];
+
+/* The interactive envelope is the magazine's finale. On desktop it is rendered
+   as a standalone full-page overlay (NOT part of the fold/flip sheet system);
+   on mobile it is appended as its own full-screen page. */
 
 // ────────────────────────────────────────────────────────────
 
@@ -540,17 +766,24 @@ function MobileMagazine({ pages }: { pages: React.FC<PageProps>[] }) {
 
 export default function Magazine() {
   const [currentSpread, setCurrentSpread] = useState(0);
+  // The envelope finale is a standalone full-page overlay, not a folded sheet.
+  const [showEnvelope, setShowEnvelope] = useState(false);
+
+  const maxSpreads = Math.floor((PAGE_CONTENTS.length - 1) / 2);
 
   const next = () => {
-    // Only allow flipping if there are remaining pages
-    const maxSpreads = Math.floor((PAGE_CONTENTS.length - 1) / 2);
     if (currentSpread < maxSpreads) {
       setCurrentSpread((c) => c + 1);
+    } else {
+      // Past the last spread → reveal the envelope finale.
+      setShowEnvelope(true);
     }
   };
 
   const prev = () => {
-    if (currentSpread > 0) {
+    if (showEnvelope) {
+      setShowEnvelope(false);
+    } else if (currentSpread > 0) {
       setCurrentSpread((c) => c - 1);
     }
   };
@@ -573,10 +806,14 @@ export default function Magazine() {
 
   const BaseLeftPage = PAGE_CONTENTS[0];
 
+  // Mobile reads pages linearly, so the envelope is just another full-screen page.
+  const EnvelopePage: React.FC<PageProps> = () => <EnvelopeCard />;
+  const mobilePages = [...PAGE_CONTENTS, EnvelopePage];
+
   return (
     <>
       <div className="block md:hidden">
-        <MobileMagazine pages={PAGE_CONTENTS} />
+        <MobileMagazine pages={mobilePages} />
       </div>
       <main
         className="hidden md:flex relative w-full h-screen justify-center items-center bg-[#f0f0f0] overflow-hidden"
@@ -609,6 +846,28 @@ export default function Magazine() {
             ))}
           </div>
         </div>
+
+        {/* Envelope finale — full-page overlay, NOT folded into the spread. */}
+        <AnimatePresence>
+          {showEnvelope && (
+            <motion.div
+              key="envelope-finale"
+              className="absolute inset-0 z-[60]"
+              initial={{ opacity: 0, scale: 1.04 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.04 }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <EnvelopeCard />
+              <button
+                onClick={prev}
+                className="absolute bottom-8 left-8 z-10 px-6 py-2 bg-accent text-white hover:opacity-80 transition-all duration-300 cursor-pointer"
+              >
+                Previous Page
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
     </>
   );
