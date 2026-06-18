@@ -17,6 +17,16 @@ interface PageProps {
 
 const imageCache = new Set<string>();
 
+// Inject Cloudinary responsive transforms so mobile never downloads a
+// full-resolution original. w_900 is plenty for a half-screen magazine page;
+// q_auto and f_auto let Cloudinary pick the best quality and format (WebP/AVIF).
+function cdnImg(url: string): string {
+  return url.replace(
+    "/image/upload/",
+    "/image/upload/w_900,q_auto,f_auto/",
+  );
+}
+
 // The handwritten note's content lives in one place so the tucked-in copy and
 // the focused, centered copy stay identical.
 function NoteContent({ className = "" }: { className?: string }) {
@@ -32,10 +42,10 @@ function NoteContent({ className = "" }: { className?: string }) {
         src="/assets/doggie.png"
         alt=""
         draggable={false}
-        className="w-28 h-28 object-contain pointer-events-none"
+        className="w-16 h-16 md:w-24 md:h-24 object-contain pointer-events-none"
       />
       <p
-        className="text-4xl text-[#1f2d24] text-center"
+        className="text-base text-[#1f2d24]/60 text-center"
         style={{ fontFamily: '"Shadows Into Light", cursive' }}
       >
         with love pa1.
@@ -118,11 +128,16 @@ function EnvelopeCard() {
               y,
               bottom: "30%",
               width: "60%",
+              // Claim this touch entirely so the parent x-swipe handler never
+              // sees it — prevents fast upward drags from triggering prev/next.
+              touchAction: "none",
             }}
             drag="y"
             dragConstraints={{ top: PULLED_OUT, bottom: REST_HIDDEN }}
             dragElastic={0.05}
-            onDragEnd={() => {
+            onDragStart={(e) => e.stopPropagation()}
+            onDragEnd={(e) => {
+              e.stopPropagation();
               // Pulled past halfway → lift it out into the centered focus view.
               if (y.get() < PULLED_OUT / 2) {
                 setFocused(true);
@@ -132,24 +147,19 @@ function EnvelopeCard() {
             }}
             whileTap={{ cursor: "grabbing" }}
           >
-            {/* Shared element: this SAME yellow card flies to the screen centre
-                via layoutId when focused, so the motion is one continuous note
-                rather than a swap between two elements. */}
             <motion.div
               layoutId="envelope-note"
-              className="bg-[#fdf6b2] px-8 pt-4 pb-7"
+              className="bg-[#fdf6b2] px-4 md:px-8 pt-3 md:pt-4 pb-5 md:pb-7"
               style={{ rotate: -1.4, boxShadow: noteShadow }}
               transition={NOTE_MORPH}
               onLayoutAnimationComplete={() => {
-                // The center→opening morph just finished; now slide the note
-                // DOWN into the slot, completing the reverse of the pull-out.
                 if (returning) {
                   setReturning(false);
                   animateNote(y, REST_HIDDEN);
                 }
               }}
             >
-              <NoteContent className="text-2xl md:text-3xl" />
+              <NoteContent className="text-base md:text-2xl" />
             </motion.div>
           </motion.div>
         )}
@@ -187,14 +197,14 @@ function EnvelopeCard() {
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 pointer-events-none">
           <motion.div
             layoutId="envelope-note"
-            className="bg-[#fdf6b2] px-10 py-12 md:px-14 md:py-16 cursor-default pointer-events-auto"
+            className="bg-[#fdf6b2] px-8 py-10 md:px-14 md:py-16 cursor-default pointer-events-auto"
             style={{ boxShadow: "0 30px 70px rgba(0,0,0,0.35)" }}
             initial={{ rotate: -1.4 }}
             animate={{ rotate: 0 }}
             transition={NOTE_MORPH}
             onClick={(e) => e.stopPropagation()}
           >
-            <NoteContent className="text-3xl md:text-5xl" />
+            <NoteContent className="text-xl md:text-4xl" />
           </motion.div>
         </div>
       )}
@@ -256,7 +266,7 @@ const PAGE_CONTENTS: React.FC<PageProps>[] = [
           </h1>
         </a>
       </div>
-      <div className="w-full h-[60%] flex bg-[url('https://res.cloudinary.com/pa1/image/upload/v1775834846/100_0658_h05ndy.jpg')] bg-cover bg-center"></div>
+      <div className="w-full h-[60%] flex bg-cover bg-center" style={{ backgroundImage: `url('${cdnImg("https://res.cloudinary.com/pa1/image/upload/v1775834846/100_0658_h05ndy.jpg")}')` }}></div>
     </div>
   ),
 
@@ -418,27 +428,27 @@ const PAGE_CONTENTS: React.FC<PageProps>[] = [
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 w-full mt-6 auto-rows-[160px] pb-8 grid-flow-dense">
           {[
             {
-              src: "https://res.cloudinary.com/pa1/image/upload/v1775845843/100_0628_g5llq4.jpg",
+              src: cdnImg("https://res.cloudinary.com/pa1/image/upload/v1775845843/100_0628_g5llq4.jpg"),
               span: "col-span-2 row-span-2",
             },
             {
-              src: "https://res.cloudinary.com/pa1/image/upload/v1775845864/100_0730_lga8pq.jpg",
+              src: cdnImg("https://res.cloudinary.com/pa1/image/upload/v1775845864/100_0730_lga8pq.jpg"),
               span: "col-span-1 row-span-1",
             },
             {
-              src: "https://res.cloudinary.com/pa1/image/upload/v1775845877/100_0738_djo5jl.jpg",
+              src: cdnImg("https://res.cloudinary.com/pa1/image/upload/v1775845877/100_0738_djo5jl.jpg"),
               span: "col-span-1 row-span-1",
             },
             {
-              src: "https://res.cloudinary.com/pa1/image/upload/v1775845899/100_0723_g5jfwk.jpg",
+              src: cdnImg("https://res.cloudinary.com/pa1/image/upload/v1775845899/100_0723_g5jfwk.jpg"),
               span: "col-span-1 row-span-1",
             },
             {
-              src: "https://res.cloudinary.com/pa1/image/upload/v1775845965/653668010_18096341099075239_2060828916065555154_n_mczt2w.webp",
+              src: cdnImg("https://res.cloudinary.com/pa1/image/upload/v1775845965/653668010_18096341099075239_2060828916065555154_n_mczt2w.webp"),
               span: "col-span-2 row-span-2",
             },
             {
-              src: "https://res.cloudinary.com/pa1/image/upload/v1775845952/669653454_18577546972026972_6718318350358987408_n_kckkmf.webp",
+              src: cdnImg("https://res.cloudinary.com/pa1/image/upload/v1775845952/669653454_18577546972026972_6718318350358987408_n_kckkmf.webp"),
               span: "col-span-1 row-span-1",
             },
           ].map((item, i) => (
@@ -557,27 +567,27 @@ const PAGE_CONTENTS: React.FC<PageProps>[] = [
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 w-full mt-6 auto-rows-[160px] pb-8 grid-flow-dense">
           {[
             {
-              src: "https://res.cloudinary.com/pa1/image/upload/v1777473765/Shot_14_rtlwqt.jpg",
+              src: cdnImg("https://res.cloudinary.com/pa1/image/upload/v1777473765/Shot_14_rtlwqt.jpg"),
               span: "col-span-2 row-span-2",
             },
             {
-              src: "https://res.cloudinary.com/pa1/image/upload/v1777473765/Shot_2_tb2poj.jpg",
+              src: cdnImg("https://res.cloudinary.com/pa1/image/upload/v1777473765/Shot_2_tb2poj.jpg"),
               span: "col-span-1 row-span-1",
             },
             {
-              src: "https://res.cloudinary.com/pa1/image/upload/v1777473765/Shot_3_yboo7u.jpg",
+              src: cdnImg("https://res.cloudinary.com/pa1/image/upload/v1777473765/Shot_3_yboo7u.jpg"),
               span: "md:col-span-2 col-span-1 row-span-2",
             },
             {
-              src: "https://res.cloudinary.com/pa1/image/upload/v1777473766/Shot_12_fvrzx7.jpg",
+              src: cdnImg("https://res.cloudinary.com/pa1/image/upload/v1777473766/Shot_12_fvrzx7.jpg"),
               span: "col-span-1 row-span-2",
             },
             {
-              src: "https://res.cloudinary.com/pa1/image/upload/v1777473766/Shot_6_ocmlzf.jpg",
+              src: cdnImg("https://res.cloudinary.com/pa1/image/upload/v1777473766/Shot_6_ocmlzf.jpg"),
               span: "col-span-1 row-span-1",
             },
             {
-              src: "https://res.cloudinary.com/pa1/image/upload/v1777473771/Shot_10_vhopu2.jpg",
+              src: cdnImg("https://res.cloudinary.com/pa1/image/upload/v1777473771/Shot_10_vhopu2.jpg"),
               span: "md:col-span-3 col-span-2 row-span-2",
             },
           ].map((item, i) => (
